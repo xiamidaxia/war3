@@ -125,7 +125,8 @@ export default function App() {
           const t = 1.0 - angle / angularSize;
           h = Math.pow(t, 1.5) * 0.22;
         }
-        elev.setXYZ(i, v.x * (1.0 + h), v.y * (1.0 + h), v.z * (1.0 + h));
+        // FIX: scale to planet radius so land sits above ocean
+        elev.setXYZ(i, v.x * radius * (1.0 + h), v.y * radius * (1.0 + h), v.z * radius * (1.0 + h));
         let c;
         if (h < 0.02) c = new THREE.Color('#f7e08c');
         else if (h < 0.12) c = new THREE.Color('#7dd36f');
@@ -139,7 +140,7 @@ export default function App() {
       landGeom.setAttribute('color', new THREE.BufferAttribute(colors, 3));
       landGeom.computeVertexNormals();
 
-      const landMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1.0, metalness: 0.0 });
+      const landMat = new THREE.MeshStandardMaterial({ vertexColors: true, roughness: 1.0, metalness: 0.0, polygonOffset: true, polygonOffsetFactor: -1, polygonOffsetUnits: -1 });
       const land = new THREE.Mesh(landGeom, landMat);
       landGroup.add(land);
 
@@ -161,11 +162,13 @@ export default function App() {
       const scale = new THREE.Vector3(1, 1, 1);
       const v = new THREE.Vector3();
       for (let i = 0, bi = 0, ti = 0; i < positions.count && (bi < buildings.count || ti < trees.count); i += 40) {
-        v.fromBufferAttribute(elev, i).normalize();
-        const height = v.length();
-        if (height < 1.01) continue;
-        const pos = v.clone().multiplyScalar(radius * height);
-        up.copy(v).normalize();
+        // Use absolute vertex position from elevated geometry
+        v.fromBufferAttribute(elev, i);
+        const radial = v.length();
+        if (radial <= radius * 1.002) continue; // avoid water/beach
+        const n = v.clone().normalize();
+        const pos = v.clone(); // already in world units on the sphere surface
+        up.copy(n);
         quat.setFromUnitVectors(new THREE.Vector3(0, 1, 0), up);
         const twist = new THREE.Quaternion().setFromAxisAngle(up, Math.random() * Math.PI * 2);
         quat.multiply(twist);
@@ -219,7 +222,6 @@ export default function App() {
       return dir.multiplyScalar(radius * 1.02);
     }
 
-    let orbitAngle = 0;
     let lastDrop = 0;
 
     const controls = new OrbitControls(camera, renderer.domElement);
@@ -235,11 +237,11 @@ export default function App() {
       const t = clock.getElapsedTime();
       oceanMat.uniforms.uTime.value = t;
 
-      orbitAngle += 0.35 * clock.getDelta();
+      // Make airplane orbit time-based to ensure movement
       const orbitRadius = radius * 3.0;
-      const px = Math.cos(orbitAngle) * orbitRadius;
-      const pz = Math.sin(orbitAngle) * orbitRadius;
-      const py = Math.sin(orbitAngle * 2.0) * orbitRadius * 0.15;
+      const px = Math.cos(t * 0.35) * orbitRadius;
+      const pz = Math.sin(t * 0.35) * orbitRadius;
+      const py = Math.sin(t * 0.7) * orbitRadius * 0.15;
       airplane.position.set(px, py, pz);
       airplane.lookAt(0, 0, 0);
 
