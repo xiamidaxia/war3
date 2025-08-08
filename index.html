@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Three.js 小地球示例</title>
+    <style>
+      html, body { height: 100%; margin: 0; background: #87b6ff; }
+      #app { position: fixed; inset: 0; }
+      .hud { position: fixed; left: 12px; bottom: 12px; color: #033; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; background: rgba(255,255,255,0.65); padding: 8px 10px; border-radius: 8px; box-shadow: 0 6px 24px rgba(0,0,0,.15); }
+      .hud code { font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <div class="hud">
+      拖拽旋转地球 · 双击复位 · 物品会被飞机随机投放
+    </div>
+
+    <script type="module">
+      import './src/main.js';
+    </script>
+  </body>
+</html>
