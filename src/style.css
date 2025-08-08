@@ -1,0 +1,65 @@
+html, body, #app {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #cfe8e0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;
+}
+
+#hud {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  z-index: 10;
+  color: #222;
+  font-weight: 600;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+  display: flex;
+  gap: 16px;
+}
+
+#toolbar {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  background: rgba(255,255,255,0.9);
+  border-radius: 8px;
+  padding: 8px 12px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+  display: flex;
+  gap: 8px;
+}
+
+.tool-btn {
+  border: none;
+  background: #fff;
+  border-radius: 6px;
+  padding: 6px 10px;
+  cursor: pointer;
+  box-shadow: inset 0 -1px 0 rgba(0,0,0,0.05);
+}
+
+#selection-rect {
+  position: absolute;
+  border: 1px solid #00a8ff;
+  background: rgba(0,168,255,0.2);
+  pointer-events: none;
+  z-index: 20;
+  display: none;
+}
+
+#tooltip {
+  position: absolute;
+  z-index: 15;
+  color: #111;
+  font-size: 12px;
+  padding: 4px 6px;
+  background: rgba(255,255,255,0.85);
+  border-radius: 4px;
+  pointer-events: none;
+  display: none;
+}
